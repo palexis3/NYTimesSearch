@@ -4,11 +4,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-
+// Model object responsible for encapsulating the attributes for each individual article
 //Article model will help to parse json
-public class Article {
+public class Article implements Serializable{
 
     String webUrl;
     String headLine;
