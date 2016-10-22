@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.Toast;
 
 import com.example.palexis3.nytimes.R;
 import com.example.palexis3.nytimes.adapters.ArticleArrayAdapter;
@@ -33,7 +34,7 @@ import cz.msebera.android.httpclient.Header;
 
 
 // Responsible for fetching and deserializing the data and configuring the adapter
-public class SearchActivity extends AppCompatActivity {
+public class SearchActivity extends AppCompatActivity implements FilterDialogFragment.onFilterSelectedListener {
 
     GridView gvResults;
     Toolbar toolbar;
@@ -42,6 +43,9 @@ public class SearchActivity extends AppCompatActivity {
     ArticleArrayAdapter adapter;
 
     NYTimesSearchClient client;
+
+    String searchQuery; //holds query that user passes into searchview
+    String beginDate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,6 +105,7 @@ public class SearchActivity extends AppCompatActivity {
             public boolean onQueryTextSubmit(String query) {
                 //fetching articles
                 fetchArticles(query);
+                searchQuery = query;
                 //workaround to avoid issues with some devices
                 searchView.clearFocus();
 
@@ -132,9 +137,24 @@ public class SearchActivity extends AppCompatActivity {
         }
     }
 
+    //dialog interface method to receive filter info
+    public void onFilterSelected(String s) {
+       if(s == null || s.equalsIgnoreCase("")){
+           Toast.makeText(this, "Invalid begin date", Toast.LENGTH_LONG).show();
+       }else{
+           beginDate = s;
+           fetchArticles(searchQuery);
+       }
+    }
+
     //fetch articles from nytimes endpoint with string query being passed in
     private void fetchArticles(String query) {
         client = new NYTimesSearchClient();
+
+        if(beginDate != null) {
+            client.getBeginDate(beginDate);
+        }
+
         client.getArticles(query, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
@@ -158,9 +178,11 @@ public class SearchActivity extends AppCompatActivity {
 
       }
 
+    //method to call filter dialog
     private void showFilterDialog() {
         FragmentManager fm = getSupportFragmentManager();
         FilterDialogFragment dialog = FilterDialogFragment.newInstance("Filter");
         dialog.show(fm, "fragment_filter");
     }
+
 }

@@ -34,4 +34,16 @@ public class NYTimesSearchClient {
             e.printStackTrace();
         }
     }
+
+    public void getBeginDate(String date) {
+        params.add("begin_date", date);
+    }
+
+    public void getSortOrder(String order) {
+        params.add("sort", order);
+    }
+
+    public void getDeskValues(String[] args) {
+       // params.add();
+    }
 }

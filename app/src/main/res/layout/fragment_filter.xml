@@ -40,9 +40,12 @@
         android:id="@+id/spSortOrder"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:entries="@array/sort_array"
         android:layout_below="@+id/etBeginDate"
         android:layout_toRightOf="@+id/tvSortOrder"
-        android:layout_marginTop="46dp" />
+        android:layout_marginTop="22dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginStart="10dp"/>
 
     <TextView
         android:id="@+id/tvNewsDesk"
