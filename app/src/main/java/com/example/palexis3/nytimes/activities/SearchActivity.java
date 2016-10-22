@@ -13,7 +13,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
-import android.widget.Toast;
 
 import com.example.palexis3.nytimes.R;
 import com.example.palexis3.nytimes.adapters.ArticleArrayAdapter;
@@ -46,6 +45,7 @@ public class SearchActivity extends AppCompatActivity implements FilterDialogFra
 
     String searchQuery; //holds query that user passes into searchview
     String beginDate;
+    String sortOrder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -137,15 +137,6 @@ public class SearchActivity extends AppCompatActivity implements FilterDialogFra
         }
     }
 
-    //dialog interface method to receive filter info
-    public void onFilterSelected(String s) {
-       if(s == null || s.equalsIgnoreCase("")){
-           Toast.makeText(this, "Invalid begin date", Toast.LENGTH_LONG).show();
-       }else{
-           beginDate = s;
-           fetchArticles(searchQuery);
-       }
-    }
 
     //fetch articles from nytimes endpoint with string query being passed in
     private void fetchArticles(String query) {
@@ -154,6 +145,7 @@ public class SearchActivity extends AppCompatActivity implements FilterDialogFra
         if(beginDate != null) {
             client.getBeginDate(beginDate);
         }
+        client.getSortOrder(sortOrder);
 
         client.getArticles(query, new JsonHttpResponseHandler() {
             @Override
@@ -177,6 +169,20 @@ public class SearchActivity extends AppCompatActivity implements FilterDialogFra
         });
 
       }
+
+
+    //dialog interface method to receive filter info
+    public void onFilterSelected(String date, String order) {
+        if(date == null || date.equalsIgnoreCase("")){
+            //Toast.makeText(this, "Invalid begin date", Toast.LENGTH_LONG).show();
+        }else{
+            beginDate = date;
+        }
+
+        sortOrder = order;
+
+        fetchArticles(searchQuery);
+    }
 
     //method to call filter dialog
     private void showFilterDialog() {

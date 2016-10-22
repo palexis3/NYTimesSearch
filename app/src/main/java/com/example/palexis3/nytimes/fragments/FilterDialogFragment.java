@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.SpinnerAdapter;
 
 import com.example.palexis3.nytimes.R;
 
@@ -33,7 +34,7 @@ public class FilterDialogFragment extends DialogFragment{
 
     //activity must implement this interface to receive filter info
     public interface onFilterSelectedListener {
-        abstract void onFilterSelected(String s);
+        abstract void onFilterSelected(String date, String order);
     }
 
 
@@ -83,8 +84,9 @@ public class FilterDialogFragment extends DialogFragment{
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         //run the fetching query
-                        String s = getBeginDate();
-                        fListener.onFilterSelected(s);
+                        String date = getBeginDate();
+                        String order = getSortOrder();
+                        fListener.onFilterSelected(date, order);
                     }
                 })
                 .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
@@ -130,5 +132,23 @@ public class FilterDialogFragment extends DialogFragment{
         }
 
         return result;
+    }
+
+    public String getSortOrder() {
+        String result = sortSpinner.getSelectedItem().toString();
+        setSpinnerValue(result);
+        return result;
+    }
+
+    public void setSpinnerValue(String val) {
+        int index = 0;
+        SpinnerAdapter adapter = sortSpinner.getAdapter();
+        for(int i = 0; i < adapter.getCount(); i++) {
+            if(adapter.getItem(i).equals(val)) {
+                index = i;
+                break;
+            }
+        }
+        sortSpinner.setSelection(index);
     }
 }
