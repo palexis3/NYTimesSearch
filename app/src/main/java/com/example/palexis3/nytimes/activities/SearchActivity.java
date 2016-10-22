@@ -2,6 +2,7 @@ package com.example.palexis3.nytimes.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
@@ -12,11 +13,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
-import android.widget.Toast;
 
 import com.example.palexis3.nytimes.R;
 import com.example.palexis3.nytimes.adapters.ArticleArrayAdapter;
 import com.example.palexis3.nytimes.clients.NYTimesSearchClient;
+import com.example.palexis3.nytimes.fragments.FilterDialogFragment;
 import com.example.palexis3.nytimes.models.Article;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
@@ -63,17 +64,8 @@ public class SearchActivity extends AppCompatActivity {
         gvResults.setAdapter(adapter);
 
         gridViewListener();
-        //filterClickListener();
     }
 
-    /*public void filterClickListener() {
-        toolbar.findViewById(R.id.filter).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "I'm in filter", Toast.LENGTH_LONG);
-            }
-        });
-    }*/
 
     public void gridViewListener() {
         //bind listener for grid click
@@ -132,7 +124,8 @@ public class SearchActivity extends AppCompatActivity {
             case R.id.action_settings :
                 return true;
             case R.id.filter :
-                Toast.makeText(this, "I'm in filter", Toast.LENGTH_LONG).show();
+                //start the filter dialog
+                showFilterDialog();
                 return true;
             default :
                 return super.onOptionsItemSelected(item);
@@ -164,4 +157,10 @@ public class SearchActivity extends AppCompatActivity {
         });
 
       }
+
+    private void showFilterDialog() {
+        FragmentManager fm = getSupportFragmentManager();
+        FilterDialogFragment dialog = FilterDialogFragment.newInstance("Filter");
+        dialog.show(fm, "fragment_filter");
     }
+}

@@ -10,6 +10,7 @@ public class NYTimesSearchClient {
     private AsyncHttpClient client;
     private final String API_KEY = "a0d936f8e6304a8393cd064c16a648c8";
     private final String API_BASE_URL = "https://api.nytimes.com/";
+    private RequestParams params = new RequestParams();
 
     public NYTimesSearchClient(){
         this.client = new AsyncHttpClient();
@@ -23,7 +24,6 @@ public class NYTimesSearchClient {
     public void getArticles(String query, JsonHttpResponseHandler handler) {
         String url = getApiUrl("svc/search/v2/articlesearch.json");
 
-        RequestParams params = new RequestParams();
         params.add("api-key", API_KEY);
         params.add("page", "0");
         params.add("q", query);

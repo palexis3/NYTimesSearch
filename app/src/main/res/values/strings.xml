@@ -3,6 +3,14 @@
     <string name="action_settings">Settings</string>
     <string name="hint">Enter search query</string>
     <string name="search">Search</string>
+    <string name="cancel">Cancel</string>
     <string name="title_activity_article">ArticleActivity</string>
     <string name="filter">Filter</string>
+    <string name="begin_date">Begin Date</string>
+    <string name="sort_order">Sort Order</string>
+    <string name="news_desk_values">News Desk Values</string>
+    <string name="arts_checkbox">Arts</string>
+    <string name="fashion_and_style_checkbox"><![CDATA[Fashion & Style]]></string>
+    <string name="sports_checkbox">Sports</string>
+    <string name="begin_date_hint">YYYYMMDD</string>
 </resources>
