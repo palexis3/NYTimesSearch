@@ -6,7 +6,7 @@ import android.support.v7.widget.Toolbar;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-import com.example.palexis3.nytimes.Article;
+import com.example.palexis3.nytimes.models.Article;
 import com.example.palexis3.nytimes.R;
 
 public class ArticleActivity extends AppCompatActivity {

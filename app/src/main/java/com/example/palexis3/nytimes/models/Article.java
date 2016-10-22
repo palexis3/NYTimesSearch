@@ -1,4 +1,4 @@
-package com.example.palexis3.nytimes;
+package com.example.palexis3.nytimes.models;
 
 import org.json.JSONArray;
 import org.json.JSONException;

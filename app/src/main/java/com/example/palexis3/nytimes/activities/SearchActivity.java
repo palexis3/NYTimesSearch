@@ -12,11 +12,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.Toast;
 
-import com.example.palexis3.nytimes.Article;
 import com.example.palexis3.nytimes.R;
 import com.example.palexis3.nytimes.adapters.ArticleArrayAdapter;
 import com.example.palexis3.nytimes.clients.NYTimesSearchClient;
+import com.example.palexis3.nytimes.models.Article;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.json.JSONArray;
@@ -54,12 +55,25 @@ public class SearchActivity extends AppCompatActivity {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        //allow icons in toolbar to be clickable
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
         articles = new ArrayList<>();
         adapter = new ArticleArrayAdapter(this, articles);
         gvResults.setAdapter(adapter);
 
         gridViewListener();
+        //filterClickListener();
     }
+
+    /*public void filterClickListener() {
+        toolbar.findViewById(R.id.filter).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getApplicationContext(), "I'm in filter", Toast.LENGTH_LONG);
+            }
+        });
+    }*/
 
     public void gridViewListener() {
         //bind listener for grid click
@@ -76,6 +90,11 @@ public class SearchActivity extends AppCompatActivity {
                 startActivity(i);
             }
         });
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        return super.onPrepareOptionsMenu(menu);
     }
 
     @Override
@@ -109,14 +128,15 @@ public class SearchActivity extends AppCompatActivity {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        switch (item.getItemId()) {
+            case R.id.action_settings :
+                return true;
+            case R.id.filter :
+                Toast.makeText(this, "I'm in filter", Toast.LENGTH_LONG).show();
+                return true;
+            default :
+                return super.onOptionsItemSelected(item);
         }
-
-        return super.onOptionsItemSelected(item);
     }
 
     //fetch articles from nytimes endpoint with string query being passed in

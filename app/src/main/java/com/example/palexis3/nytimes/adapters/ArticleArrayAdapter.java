@@ -9,7 +9,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.palexis3.nytimes.Article;
+import com.example.palexis3.nytimes.models.Article;
 import com.example.palexis3.nytimes.R;
 import com.squareup.picasso.Picasso;
 
