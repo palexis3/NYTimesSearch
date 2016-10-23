@@ -32,6 +32,7 @@ import cz.msebera.android.httpclient.Header;
 
 
 
+
 // Responsible for fetching and deserializing the data and configuring the adapter
 public class SearchActivity extends AppCompatActivity implements FilterDialogFragment.onFilterSelectedListener {
 
@@ -46,6 +47,7 @@ public class SearchActivity extends AppCompatActivity implements FilterDialogFra
     String searchQuery; //holds query that user passes into searchview
     String beginDate;
     String sortOrder;
+    ArrayList<String> newsDeskList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,6 +107,7 @@ public class SearchActivity extends AppCompatActivity implements FilterDialogFra
             public boolean onQueryTextSubmit(String query) {
                 //fetching articles
                 fetchArticles(query);
+                //making query value accessible to other functions
                 searchQuery = query;
                 //workaround to avoid issues with some devices
                 searchView.clearFocus();
@@ -142,10 +145,20 @@ public class SearchActivity extends AppCompatActivity implements FilterDialogFra
     private void fetchArticles(String query) {
         client = new NYTimesSearchClient();
 
-        if(beginDate != null) {
-            client.getBeginDate(beginDate);
+        //calling begin date func in client
+        if(beginDate != null && beginDate.matches("^\\d{8}")) {
+         client.getBeginDate(beginDate);
         }
-        client.getSortOrder(sortOrder);
+
+        //calling spinner order func in client
+        if(sortOrder != null) {
+            client.getSortOrder(sortOrder);
+        }
+
+        //calling the checkbox func in client
+        if(newsDeskList != null) {
+            client.getDeskValues(newsDeskList);
+        }
 
         client.getArticles(query, new JsonHttpResponseHandler() {
             @Override
@@ -166,21 +179,30 @@ public class SearchActivity extends AppCompatActivity implements FilterDialogFra
                     e.printStackTrace();
                 }
             }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                super.onFailure(statusCode, headers, throwable, errorResponse);
+                Log.d("Failed: ", ""+ statusCode);
+                Log.d("Error : ", "" + errorResponse.toString());
+            }
         });
 
       }
 
 
     //dialog interface method to receive filter info
-    public void onFilterSelected(String date, String order) {
-        if(date == null || date.equalsIgnoreCase("")){
-            //Toast.makeText(this, "Invalid begin date", Toast.LENGTH_LONG).show();
-        }else{
-            beginDate = date;
-        }
+    public void onFilterSelected(String date, String order, ArrayList<String> list) {
 
+        beginDate = date;
+        if(list.size() > 0) {
+            newsDeskList = list;
+        }else {
+            newsDeskList = null;
+        }
         sortOrder = order;
 
+        //run main fetching call
         fetchArticles(searchQuery);
     }
 

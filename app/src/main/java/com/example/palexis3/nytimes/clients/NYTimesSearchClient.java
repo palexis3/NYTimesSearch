@@ -1,8 +1,12 @@
 package com.example.palexis3.nytimes.clients;
 
+import android.util.Log;
+
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
+
+import java.util.ArrayList;
 
 
 //Responsible for executing the API requests and retrieving the JSON
@@ -29,6 +33,7 @@ public class NYTimesSearchClient {
         params.add("q", query);
 
         try {
+            Log.d("Params", params.toString());
             client.get(url, params, handler);
         } catch (Exception e) {
             e.printStackTrace();
@@ -36,14 +41,25 @@ public class NYTimesSearchClient {
     }
 
     public void getBeginDate(String date) {
-        params.add("begin_date", date);
+            params.add("begin_date", date);
     }
 
     public void getSortOrder(String order) {
-        params.add("sort", order);
+            params.add("sort", order);
     }
 
-    public void getDeskValues(String[] args) {
-       // params.add();
+    public void getDeskValues(ArrayList<String> list) {
+        if(list != null) {
+            String newsDeskString = "";
+            for(int i = 0; i < list.size(); i++) {
+                if(i != 0) {
+                    newsDeskString += ("%20" + String.format("%s", list.get(i)));
+                }else{
+                    newsDeskString += (String.format("%s", list.get(i)));
+                }
+            }
+            String temp = String.format("news_desk:(%s)", newsDeskString);
+            params.add("fq", temp);
+        }
     }
 }
