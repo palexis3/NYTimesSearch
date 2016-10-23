@@ -11,7 +11,6 @@ import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
@@ -31,8 +30,6 @@ public class FilterDialogFragment extends DialogFragment{
     private onFilterSelectedListener fListener;
 
     ArrayList<String> newsDeskList = null;
-
-
 
 
     //empty constructor
@@ -112,56 +109,27 @@ public class FilterDialogFragment extends DialogFragment{
 
     public ArrayList<String> getCheckBoxes() {
 
-       newsDeskList = new ArrayList<>();
+        newsDeskList = new ArrayList<>();
 
-        artsCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isChecked && !newsDeskList.contains("Arts")) {
-                    newsDeskList.add("Arts");
-                }
-            }
-        });
+        if(artsCheckBox.isChecked() && !newsDeskList.contains("Arts")) {
+            newsDeskList.add("Arts");
+        }
 
-        fashionCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isChecked && !newsDeskList.contains("Fashion & Style")) {
-                    newsDeskList.add("Fashion & Style");
-                }
-            }
-        });
+        if(fashionCheckBox.isChecked() && !newsDeskList.contains("Fashion & Style")) {
+            newsDeskList.add("Fashion & Style");
+        }
 
-        sportsCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isChecked && !newsDeskList.contains("Sports")) {
-                    newsDeskList.add("Sports");
-                }
-            }
-        });
+        if(sportsCheckBox.isChecked() && !newsDeskList.contains("Sports")) {
+            newsDeskList.add("Sports");
+        }
 
         return newsDeskList;
     }
 
 
-    //this is pretty messy code; see if you can refactor in the client
     public String getBeginDate() {
 
         String result = dateEditText.getText().toString();
-
-        /*length of item must be 8
-        if(result.length() != 8) {
-           return  "";
-        }*/
-
-        //check if string is a legit number
-        try {
-            int i = Integer.parseInt(result);
-        } catch (NumberFormatException e){
-            return "";
-        }
-
         return result;
     }
 

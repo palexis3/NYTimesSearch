@@ -49,7 +49,6 @@ public class NYTimesSearchClient {
     }
 
     public void getDeskValues(ArrayList<String> list) {
-        if(list != null) {
             String newsDeskString = "";
             for(int i = 0; i < list.size(); i++) {
                 if(i != 0) {
@@ -60,6 +59,5 @@ public class NYTimesSearchClient {
             }
             String temp = String.format("news_desk:(%s)", newsDeskString);
             params.add("fq", temp);
-        }
     }
 }

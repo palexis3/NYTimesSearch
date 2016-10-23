@@ -146,6 +146,7 @@ public class SearchActivity extends AppCompatActivity implements FilterDialogFra
         client = new NYTimesSearchClient();
 
         //calling begin date func in client
+        //check if string is a legit number also
         if(beginDate != null && beginDate.matches("^\\d{8}")) {
          client.getBeginDate(beginDate);
         }
@@ -163,7 +164,6 @@ public class SearchActivity extends AppCompatActivity implements FilterDialogFra
         client.getArticles(query, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                //Log.d("Debug", response.toString());
                 JSONArray articleJsonResults = null;
 
                 try {
