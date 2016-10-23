@@ -29,8 +29,6 @@ public class FilterDialogFragment extends DialogFragment{
 
     private onFilterSelectedListener fListener;
 
-    ArrayList<String> newsDeskList = null;
-
 
     //empty constructor
     public FilterDialogFragment() {
@@ -109,7 +107,7 @@ public class FilterDialogFragment extends DialogFragment{
 
     public ArrayList<String> getCheckBoxes() {
 
-        newsDeskList = new ArrayList<>();
+        ArrayList<String> newsDeskList = new ArrayList<>();
 
         if(artsCheckBox.isChecked() && !newsDeskList.contains("Arts")) {
             newsDeskList.add("Arts");
