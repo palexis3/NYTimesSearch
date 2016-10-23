@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -16,6 +18,7 @@ import android.widget.GridView;
 
 import com.example.palexis3.nytimes.R;
 import com.example.palexis3.nytimes.adapters.ArticleArrayAdapter;
+import com.example.palexis3.nytimes.adapters.ArticlesRecyclerAdapter;
 import com.example.palexis3.nytimes.clients.NYTimesSearchClient;
 import com.example.palexis3.nytimes.fragments.FilterDialogFragment;
 import com.example.palexis3.nytimes.models.Article;
@@ -41,6 +44,7 @@ public class SearchActivity extends AppCompatActivity implements FilterDialogFra
 
     ArrayList<Article> articles;
     ArticleArrayAdapter adapter;
+    ArticlesRecyclerAdapter recAdapter;
 
     NYTimesSearchClient client;
 
@@ -57,7 +61,20 @@ public class SearchActivity extends AppCompatActivity implements FilterDialogFra
     }
 
     public void setUpViews() {
-        gvResults = (GridView) findViewById(R.id.gvResults);
+        //lookup recycleview in activity layout
+        RecyclerView rvArticles = (RecyclerView) findViewById(R.id.rvArticles);
+        articles = new ArrayList<>();
+
+        recAdapter = new ArticlesRecyclerAdapter(this, articles);
+
+        //attach adapter to recycleview to populate items
+        rvArticles.setAdapter(recAdapter);
+
+        //set layout manager to position the items
+        rvArticles.setLayoutManager(new GridLayoutManager(getApplicationContext(), 4));
+
+
+       //gvResults = (GridView) findViewById(R.id.gvResults);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -65,11 +82,10 @@ public class SearchActivity extends AppCompatActivity implements FilterDialogFra
         //allow icons in toolbar to be clickable
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-        articles = new ArrayList<>();
-        adapter = new ArticleArrayAdapter(this, articles);
-        gvResults.setAdapter(adapter);
+        //adapter = new ArticleArrayAdapter(this, articles);
+        //gvResults.setAdapter(adapter);
 
-        gridViewListener();
+       // gridViewListener();
     }
 
 
@@ -148,17 +164,17 @@ public class SearchActivity extends AppCompatActivity implements FilterDialogFra
         //calling begin date func in client
         //check if string is a legit number also
         if(beginDate != null && beginDate.matches("^\\d{8}")) {
-         client.getBeginDate(beginDate);
+         client.beginDateParam(beginDate);
         }
 
         //calling spinner order func in client
         if(sortOrder != null) {
-            client.getSortOrder(sortOrder);
+            client.sortOrderParam(sortOrder);
         }
 
         //calling the checkbox func in client
         if(newsDeskList != null) {
-            client.getDeskValues(newsDeskList);
+            client.deskValuesParam(newsDeskList);
         }
 
         client.getArticles(query, new JsonHttpResponseHandler() {
@@ -168,12 +184,27 @@ public class SearchActivity extends AppCompatActivity implements FilterDialogFra
 
                 try {
                     articleJsonResults = response.getJSONObject("response").getJSONArray("docs");
+
                     //remove all articles from the adapter
-                    adapter.clear();
+                    /*adapter.clear();
                     //Load article objects into the adapter
                     adapter.addAll(Article.fromJSONArray(articleJsonResults));
-                    adapter.notifyDataSetChanged();
-                    Log.d("DEBUG", adapter.toString());
+                    adapter.notifyDataSetChanged();*/
+
+                    // record this value before making any changes to the existing list
+                    int curSize = recAdapter.getItemCount();
+
+                    ArrayList<Article> temp = Article.fromJSONArray(articleJsonResults);
+
+                    //update the existing list
+                    articles.addAll(temp);
+
+                    //notify adapter that items have been changes
+                    recAdapter.notifyItemRangeChanged(curSize, temp.size());
+
+                    Log.d("DEBUG", recAdapter.toString());
+
+                    //Log.d("DEBUG", adapter.toString());
 
                 } catch (JSONException e) {
                     e.printStackTrace();

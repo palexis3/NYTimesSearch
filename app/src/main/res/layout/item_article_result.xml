@@ -9,7 +9,10 @@
         android:layout_width="75dp"
         android:layout_height="75dp"
         android:src="@mipmap/ic_launcher"
-        android:scaleType="center"/>
+        android:scaleType="center"
+        android:layout_marginTop="8dp"
+        android:layout_marginLeft="4dp"
+        android:layout_marginStart="4dp"/>
 
     <TextView
         android:id="@+id/tvTitle"
@@ -17,5 +20,7 @@
         android:layout_height="wrap_content"
         android:maxLines="2"
         android:ellipsize="end"
-        android:text="TextView"/>
+        android:text="TextView"
+        android:layout_marginLeft="4dp"
+        android:layout_marginStart="4dp"/>
 </LinearLayout>
