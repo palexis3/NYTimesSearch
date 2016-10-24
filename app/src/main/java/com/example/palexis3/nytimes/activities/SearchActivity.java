@@ -1,6 +1,5 @@
 package com.example.palexis3.nytimes.activities;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.MenuItemCompat;
@@ -12,12 +11,8 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.GridView;
 
 import com.example.palexis3.nytimes.R;
-import com.example.palexis3.nytimes.adapters.ArticleArrayAdapter;
 import com.example.palexis3.nytimes.adapters.ArticlesRecyclerAdapter;
 import com.example.palexis3.nytimes.clients.NYTimesSearchClient;
 import com.example.palexis3.nytimes.fragments.FilterDialogFragment;
@@ -39,11 +34,11 @@ import cz.msebera.android.httpclient.Header;
 // Responsible for fetching and deserializing the data and configuring the adapter
 public class SearchActivity extends AppCompatActivity implements FilterDialogFragment.onFilterSelectedListener {
 
-    GridView gvResults;
     Toolbar toolbar;
 
+
     ArrayList<Article> articles;
-    ArticleArrayAdapter adapter;
+    RecyclerView rvArticles;
     ArticlesRecyclerAdapter recAdapter;
 
     NYTimesSearchClient client;
@@ -62,7 +57,7 @@ public class SearchActivity extends AppCompatActivity implements FilterDialogFra
 
     public void setUpViews() {
         //lookup recycleview in activity layout
-        RecyclerView rvArticles = (RecyclerView) findViewById(R.id.rvArticles);
+        rvArticles = (RecyclerView) findViewById(R.id.rvArticles);
         articles = new ArrayList<>();
 
         recAdapter = new ArticlesRecyclerAdapter(this, articles);
@@ -74,22 +69,18 @@ public class SearchActivity extends AppCompatActivity implements FilterDialogFra
         rvArticles.setLayoutManager(new GridLayoutManager(getApplicationContext(), 4));
 
 
-       //gvResults = (GridView) findViewById(R.id.gvResults);
-
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         //allow icons in toolbar to be clickable
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-        //adapter = new ArticleArrayAdapter(this, articles);
-        //gvResults.setAdapter(adapter);
 
        // gridViewListener();
     }
 
 
-    public void gridViewListener() {
+    /*public void gridViewListener() {
         //bind listener for grid click
         gvResults.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -104,7 +95,7 @@ public class SearchActivity extends AppCompatActivity implements FilterDialogFra
                 startActivity(i);
             }
         });
-    }
+    }*/
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
@@ -185,12 +176,6 @@ public class SearchActivity extends AppCompatActivity implements FilterDialogFra
                 try {
                     articleJsonResults = response.getJSONObject("response").getJSONArray("docs");
 
-                    //remove all articles from the adapter
-                    /*adapter.clear();
-                    //Load article objects into the adapter
-                    adapter.addAll(Article.fromJSONArray(articleJsonResults));
-                    adapter.notifyDataSetChanged();*/
-
                     // record this value before making any changes to the existing list
                     int curSize = recAdapter.getItemCount();
 
@@ -202,9 +187,7 @@ public class SearchActivity extends AppCompatActivity implements FilterDialogFra
                     //notify adapter that items have been changes
                     recAdapter.notifyItemRangeChanged(curSize, temp.size());
 
-                    Log.d("DEBUG", recAdapter.toString());
-
-                    //Log.d("DEBUG", adapter.toString());
+                    //Log.d("DEBUG", recAdapter.toString());
 
                 } catch (JSONException e) {
                     e.printStackTrace();
