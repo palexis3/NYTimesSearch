@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:weightSum="1">
 
-    <ImageView
+    <com.example.palexis3.nytimes.views.DynamicHeightImageView
         android:id="@+id/ivImage"
         android:layout_width="75dp"
         android:layout_height="75dp"

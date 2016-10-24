@@ -4,9 +4,9 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -65,8 +65,11 @@ public class SearchActivity extends AppCompatActivity implements FilterDialogFra
         //attach adapter to recycleview to populate items
         rvArticles.setAdapter(recAdapter);
 
+        //first param in num of columns and second is orientation
+        StaggeredGridLayoutManager gridLayoutManager = new StaggeredGridLayoutManager(4, StaggeredGridLayoutManager.VERTICAL);
+
         //set layout manager to position the items
-        rvArticles.setLayoutManager(new GridLayoutManager(getApplicationContext(), 4));
+        rvArticles.setLayoutManager(gridLayoutManager);
 
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -198,7 +201,7 @@ public class SearchActivity extends AppCompatActivity implements FilterDialogFra
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
                 super.onFailure(statusCode, headers, throwable, errorResponse);
                 Log.d("Failed: ", ""+ statusCode);
-                Log.d("Error : ", "" + errorResponse.toString());
+                Log.d("Error : ", "" + errorResponse);
             }
         });
 
