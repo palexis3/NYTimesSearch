@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
@@ -36,7 +35,7 @@ import cz.msebera.android.httpclient.Header;
 
 
 
-// Responsible for fetching and deserializing the data and configuring the adapter
+// Responsible for fetching and deserializing the data and configuring the array adapter
 public class SearchActivity extends AppCompatActivity implements FilterDialogFragment.onFilterSelectedListener {
 
     GridView gvResults;
@@ -44,7 +43,9 @@ public class SearchActivity extends AppCompatActivity implements FilterDialogFra
 
     ArrayList<Article> articles;
     ArticleArrayAdapter adapter;
+    RecyclerView rvArticles;
     ArticlesRecyclerAdapter recAdapter;
+
 
     NYTimesSearchClient client;
 
@@ -62,7 +63,7 @@ public class SearchActivity extends AppCompatActivity implements FilterDialogFra
 
     public void setUpViews() {
         //lookup recycleview in activity layout
-        RecyclerView rvArticles = (RecyclerView) findViewById(R.id.rvArticles);
+       /* rvArticles = (RecyclerView) findViewById(R.id.rvArticles);
         articles = new ArrayList<>();
 
         recAdapter = new ArticlesRecyclerAdapter(this, articles);
@@ -70,22 +71,28 @@ public class SearchActivity extends AppCompatActivity implements FilterDialogFra
         //attach adapter to recycleview to populate items
         rvArticles.setAdapter(recAdapter);
 
+        //setting up staggered grid layout
+        StaggeredGridLayoutManager gridLayoutManager = new StaggeredGridLayoutManager(4, StaggeredGridLayoutManager.VERTICAL);
         //set layout manager to position the items
-        rvArticles.setLayoutManager(new GridLayoutManager(getApplicationContext(), 4));
+        rvArticles.setLayoutManager(gridLayoutManager);
 
-
-       //gvResults = (GridView) findViewById(R.id.gvResults);
+        //setting the default animator
+        rvArticles.setItemAnimator(new DefaultItemAnimator());*/
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         //allow icons in toolbar to be clickable
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+        
+        articles = new ArrayList<>();
 
-        //adapter = new ArticleArrayAdapter(this, articles);
-        //gvResults.setAdapter(adapter);
+        gvResults = (GridView) findViewById(R.id.gvResults);
 
-       // gridViewListener();
+        adapter = new ArticleArrayAdapter(this, articles);
+        gvResults.setAdapter(adapter);
+
+        gridViewListener();
     }
 
 
@@ -159,7 +166,9 @@ public class SearchActivity extends AppCompatActivity implements FilterDialogFra
 
     //fetch articles from nytimes endpoint with string query being passed in
     private void fetchArticles(String query) {
-        client = new NYTimesSearchClient();
+        if(client == null) {
+            client = new NYTimesSearchClient();
+        }
 
         //calling begin date func in client
         //check if string is a legit number also
@@ -178,6 +187,7 @@ public class SearchActivity extends AppCompatActivity implements FilterDialogFra
         }
 
         client.getArticles(query, new JsonHttpResponseHandler() {
+
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 JSONArray articleJsonResults = null;
@@ -186,13 +196,15 @@ public class SearchActivity extends AppCompatActivity implements FilterDialogFra
                     articleJsonResults = response.getJSONObject("response").getJSONArray("docs");
 
                     //remove all articles from the adapter
-                    /*adapter.clear();
+                    adapter.clear();
                     //Load article objects into the adapter
                     adapter.addAll(Article.fromJSONArray(articleJsonResults));
-                    adapter.notifyDataSetChanged();*/
+                    adapter.notifyDataSetChanged();
+
+                    Log.d("DEBUG", adapter.toString());
 
                     // record this value before making any changes to the existing list
-                    int curSize = recAdapter.getItemCount();
+                    /*int curSize = recAdapter.getItemCount();
 
                     ArrayList<Article> temp = Article.fromJSONArray(articleJsonResults);
 
@@ -202,9 +214,7 @@ public class SearchActivity extends AppCompatActivity implements FilterDialogFra
                     //notify adapter that items have been changes
                     recAdapter.notifyItemRangeChanged(curSize, temp.size());
 
-                    Log.d("DEBUG", recAdapter.toString());
-
-                    //Log.d("DEBUG", adapter.toString());
+                    Log.d("DEBUG", recAdapter.toString());*/
 
                 } catch (JSONException e) {
                     e.printStackTrace();
