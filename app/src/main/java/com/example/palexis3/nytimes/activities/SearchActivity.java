@@ -36,7 +36,6 @@ public class SearchActivity extends AppCompatActivity implements FilterDialogFra
 
     Toolbar toolbar;
 
-
     ArrayList<Article> articles;
     RecyclerView rvArticles;
     ArticlesRecyclerAdapter recAdapter;
