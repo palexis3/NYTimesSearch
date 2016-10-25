@@ -39,6 +39,8 @@ public class NYTimesSearchClient {
         }
     }
 
+    public void pageParam(String page) { params.add("page", page); }
+
     public void beginDateParam(String date) {
             params.add("begin_date", date);
     }

@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.example.palexis3.nytimes.EndlessRecyclerViewScrollListener;
 import com.example.palexis3.nytimes.R;
 import com.example.palexis3.nytimes.adapters.ArticlesRecyclerAdapter;
 import com.example.palexis3.nytimes.clients.NYTimesSearchClient;
@@ -35,6 +36,9 @@ import cz.msebera.android.httpclient.Header;
 public class SearchActivity extends AppCompatActivity implements FilterDialogFragment.onFilterSelectedListener {
 
     Toolbar toolbar;
+    // Store a member variable for the listener
+    private EndlessRecyclerViewScrollListener scrollListener;
+
 
     ArrayList<Article> articles;
     RecyclerView rvArticles;
@@ -46,6 +50,7 @@ public class SearchActivity extends AppCompatActivity implements FilterDialogFra
     String beginDate;
     String sortOrder;
     ArrayList<String> newsDeskList;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,7 +83,62 @@ public class SearchActivity extends AppCompatActivity implements FilterDialogFra
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
 
+        scrollListener = new EndlessRecyclerViewScrollListener(gridLayoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                // Triggered only when new data needs to be appended to the list
+                loadNextDataFromApi(page);
+            }
+        };
+
+        // Adds the scroll listener to RecyclerView
+        rvArticles.addOnScrollListener(scrollListener);
+
        // gridViewListener();
+    }
+
+    // Append the next page of data into the adapter
+    // This method sends out a network request and appends new data items to adapter.
+    public void loadNextDataFromApi(int offset) {
+
+        //getting the page to start from
+        String page = String.valueOf(offset);
+        client = new NYTimesSearchClient();
+        client.pageParam(page);
+
+        client.getArticles(searchQuery, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                JSONArray articleJsonResults = null;
+
+                try {
+                    articleJsonResults = response.getJSONObject("response").getJSONArray("docs");
+
+                    // record this value before making any changes to the existing list
+                    int curSize = recAdapter.getItemCount();
+
+                    ArrayList<Article> temp = Article.fromJSONArray(articleJsonResults);
+
+                    //update the existing list
+                    articles.addAll(temp);
+
+                    //notify adapter that items have been changes
+                    recAdapter.notifyItemRangeChanged(curSize, temp.size());
+
+                    //Log.d("DEBUG", recAdapter.toString());
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                super.onFailure(statusCode, headers, throwable, errorResponse);
+                Log.d("Failed: ", "" + statusCode);
+                Log.d("Error : ", "" + errorResponse);
+            }
+        });
     }
 
 
