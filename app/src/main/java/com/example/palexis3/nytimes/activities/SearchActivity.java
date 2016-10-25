@@ -63,6 +63,7 @@ public class SearchActivity extends AppCompatActivity implements FilterDialogFra
     }
 
     public void setUpViews() {
+
         //lookup recycleview in activity layout
         rvArticles = (RecyclerView) findViewById(R.id.rvArticles);
         articles = new ArrayList<>();
@@ -95,7 +96,6 @@ public class SearchActivity extends AppCompatActivity implements FilterDialogFra
 
         // Adds the scroll listener to RecyclerView
         rvArticles.addOnScrollListener(scrollListener);
-
 
         recyclerViewsListener();
     }
@@ -162,7 +162,7 @@ public class SearchActivity extends AppCompatActivity implements FilterDialogFra
             }
         });
     }
-    
+
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {

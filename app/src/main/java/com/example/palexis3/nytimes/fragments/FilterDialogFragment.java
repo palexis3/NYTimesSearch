@@ -19,7 +19,7 @@ import com.example.palexis3.nytimes.R;
 
 import java.util.ArrayList;
 
-public class FilterDialogFragment extends DialogFragment{
+public class FilterDialogFragment extends DialogFragment {
 
     private EditText dateEditText;
     private Spinner sortSpinner;
@@ -80,6 +80,7 @@ public class FilterDialogFragment extends DialogFragment{
         artsCheckBox = (CheckBox) view.findViewById(R.id.cbArts);
         fashionCheckBox = (CheckBox) view.findViewById(R.id.cbFashionAndStyle);
         sportsCheckBox = (CheckBox) view.findViewById(R.id.cbSports);
+
 
         //inflate and set the layout for the dialog
         builder.setView(view)
