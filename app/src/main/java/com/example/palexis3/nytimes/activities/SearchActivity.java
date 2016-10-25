@@ -75,14 +75,13 @@ public class SearchActivity extends AppCompatActivity implements FilterDialogFra
         //set layout manager to position the items
         rvArticles.setLayoutManager(gridLayoutManager);
 
-
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         //allow icons in toolbar to be clickable
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-
+        //implements endless pagination
         scrollListener = new EndlessRecyclerViewScrollListener(gridLayoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {

@@ -58,7 +58,6 @@ public class ArticlesRecyclerAdapter extends RecyclerView.Adapter<ArticlesRecycl
             imageView = (DynamicHeightImageView) itemView.findViewById(R.id.ivImage);
             tvTitle = (TextView) itemView.findViewById(R.id.tvTitle);
         }
-
     }
 
     //Target interface
@@ -92,10 +91,10 @@ public class ArticlesRecyclerAdapter extends RecyclerView.Adapter<ArticlesRecycl
     }
 
     @Override
-    public void onPrepareLoad(Drawable placeHolderDrawable) {
+     public void onPrepareLoad(Drawable placeHolderDrawable) {
         Drawable d =  ContextCompat.getDrawable(context, R.drawable.nytimes_logo);
         imageView.setImageDrawable(d);
-    }
+     }
     };
 
 
