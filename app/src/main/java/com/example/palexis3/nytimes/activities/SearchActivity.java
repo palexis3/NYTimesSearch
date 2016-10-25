@@ -1,5 +1,6 @@
 package com.example.palexis3.nytimes.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.MenuItemCompat;
@@ -11,8 +12,10 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.example.palexis3.nytimes.EndlessRecyclerViewScrollListener;
+import com.example.palexis3.nytimes.ItemClickSupport;
 import com.example.palexis3.nytimes.R;
 import com.example.palexis3.nytimes.adapters.ArticlesRecyclerAdapter;
 import com.example.palexis3.nytimes.clients.NYTimesSearchClient;
@@ -93,7 +96,27 @@ public class SearchActivity extends AppCompatActivity implements FilterDialogFra
         // Adds the scroll listener to RecyclerView
         rvArticles.addOnScrollListener(scrollListener);
 
-       // gridViewListener();
+
+        recyclerViewsListener();
+    }
+
+
+    private void recyclerViewsListener() {
+
+        ItemClickSupport.addTo(rvArticles).setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
+            @Override
+            public void onItemClicked(RecyclerView recyclerView, int position, View v) {
+                // call intent
+                Intent i = new Intent(getApplicationContext(), ArticleActivity.class);
+                //get the article to display
+                Article article = (Article) articles.get(position);
+                //pass in that article into intent
+                i.putExtra("article", article);
+                //launch the activity
+                startActivity(i);
+            }
+        });
+
     }
 
     // Append the next page of data into the adapter
@@ -105,58 +128,41 @@ public class SearchActivity extends AppCompatActivity implements FilterDialogFra
         client = new NYTimesSearchClient();
         client.pageParam(page);
 
-        client.getArticles(searchQuery, new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                JSONArray articleJsonResults = null;
+            client.getArticles(searchQuery, new JsonHttpResponseHandler() {
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                    JSONArray articleJsonResults = null;
 
-                try {
-                    articleJsonResults = response.getJSONObject("response").getJSONArray("docs");
+                    try {
+                        articleJsonResults = response.getJSONObject("response").getJSONArray("docs");
 
-                    // record this value before making any changes to the existing list
-                    int curSize = recAdapter.getItemCount();
+                        // record this value before making any changes to the existing list
+                        int curSize = recAdapter.getItemCount();
 
-                    ArrayList<Article> temp = Article.fromJSONArray(articleJsonResults);
+                        ArrayList<Article> temp = Article.fromJSONArray(articleJsonResults);
 
-                    //update the existing list
-                    articles.addAll(temp);
+                        //update the existing list
+                        articles.addAll(temp);
 
-                    //notify adapter that items have been changes
-                    recAdapter.notifyItemRangeChanged(curSize, temp.size());
+                        //notify adapter that items have been changes
+                        recAdapter.notifyItemRangeChanged(curSize, temp.size());
 
-                    //Log.d("DEBUG", recAdapter.toString());
+                        //Log.d("DEBUG", recAdapter.toString());
 
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 }
-            }
 
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                super.onFailure(statusCode, headers, throwable, errorResponse);
-                Log.d("Failed: ", "" + statusCode);
-                Log.d("Error : ", "" + errorResponse);
+                @Override
+                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                    super.onFailure(statusCode, headers, throwable, errorResponse);
+                    Log.d("Failed: ", "" + statusCode);
+                    Log.d("Error : ", "" + errorResponse);
             }
         });
     }
-
-
-    /*public void gridViewListener() {
-        //bind listener for grid click
-        gvResults.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                //create an intent to display the article
-                Intent i = new Intent(getApplicationContext(), ArticleActivity.class);
-                //get the article to display
-                Article article = (Article) parent.getItemAtPosition(position);
-                //pass in that article into intent
-                i.putExtra("article", article);
-                //launch the activity
-                startActivity(i);
-            }
-        });
-    }*/
+    
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
